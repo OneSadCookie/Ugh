@@ -1,0 +1,315 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		53C5581B156771D700428040 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C5581A156771D700428040 /* Cocoa.framework */; };
+		53C55825156771D700428040 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 53C55823156771D700428040 /* InfoPlist.strings */; };
+		53C55827156771D700428040 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 53C55826156771D700428040 /* main.m */; };
+		53C5582B156771D700428040 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 53C55829156771D700428040 /* Credits.rtf */; };
+		53C5582E156771D700428040 /* UGHAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 53C5582D156771D700428040 /* UGHAppDelegate.mm */; };
+		53C55831156771D700428040 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 53C5582F156771D700428040 /* MainMenu.xib */; };
+		53C5584215677DA100428040 /* UGHGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 53C5584115677DA100428040 /* UGHGLView.mm */; };
+		53C5584515677DBB00428040 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C5584415677DBB00428040 /* OpenGL.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		53C55816156771D700428040 /* Ugh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ugh.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		53C5581A156771D700428040 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		53C5581D156771D700428040 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		53C5581E156771D700428040 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		53C5581F156771D700428040 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		53C55822156771D700428040 /* Ugh-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Ugh-Info.plist"; sourceTree = "<group>"; };
+		53C55824156771D700428040 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		53C55826156771D700428040 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		53C55828156771D700428040 /* Ugh-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Ugh-Prefix.pch"; sourceTree = "<group>"; };
+		53C5582A156771D700428040 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		53C5582C156771D700428040 /* UGHAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UGHAppDelegate.h; sourceTree = "<group>"; };
+		53C5582D156771D700428040 /* UGHAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = UGHAppDelegate.mm; sourceTree = "<group>"; };
+		53C55830156771D700428040 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		53C5584015677DA100428040 /* UGHGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UGHGLView.h; sourceTree = "<group>"; };
+		53C5584115677DA100428040 /* UGHGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UGHGLView.mm; sourceTree = "<group>"; };
+		53C5584415677DBB00428040 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		53C55813156771D700428040 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53C5584515677DBB00428040 /* OpenGL.framework in Frameworks */,
+				53C5581B156771D700428040 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		53C5580B156771D700428040 = {
+			isa = PBXGroup;
+			children = (
+				53C5584415677DBB00428040 /* OpenGL.framework */,
+				53C55820156771D700428040 /* Ugh */,
+				53C55819156771D700428040 /* Frameworks */,
+				53C55817156771D700428040 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		53C55817156771D700428040 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				53C55816156771D700428040 /* Ugh.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		53C55819156771D700428040 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				53C5581A156771D700428040 /* Cocoa.framework */,
+				53C5581C156771D700428040 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		53C5581C156771D700428040 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				53C5581D156771D700428040 /* AppKit.framework */,
+				53C5581E156771D700428040 /* CoreData.framework */,
+				53C5581F156771D700428040 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		53C55820156771D700428040 /* Ugh */ = {
+			isa = PBXGroup;
+			children = (
+				53C5582C156771D700428040 /* UGHAppDelegate.h */,
+				53C5582D156771D700428040 /* UGHAppDelegate.mm */,
+				53C5584015677DA100428040 /* UGHGLView.h */,
+				53C5584115677DA100428040 /* UGHGLView.mm */,
+				53C5582F156771D700428040 /* MainMenu.xib */,
+				53C55821156771D700428040 /* Supporting Files */,
+			);
+			path = Ugh;
+			sourceTree = "<group>";
+		};
+		53C55821156771D700428040 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				53C55822156771D700428040 /* Ugh-Info.plist */,
+				53C55823156771D700428040 /* InfoPlist.strings */,
+				53C55826156771D700428040 /* main.m */,
+				53C55828156771D700428040 /* Ugh-Prefix.pch */,
+				53C55829156771D700428040 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		53C55815156771D700428040 /* Ugh */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 53C55834156771D700428040 /* Build configuration list for PBXNativeTarget "Ugh" */;
+			buildPhases = (
+				53C55812156771D700428040 /* Sources */,
+				53C55813156771D700428040 /* Frameworks */,
+				53C55814156771D700428040 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Ugh;
+			productName = Ugh;
+			productReference = 53C55816156771D700428040 /* Ugh.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		53C5580D156771D700428040 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = UGH;
+				LastUpgradeCheck = 0430;
+			};
+			buildConfigurationList = 53C55810156771D700428040 /* Build configuration list for PBXProject "Ugh" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 53C5580B156771D700428040;
+			productRefGroup = 53C55817156771D700428040 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				53C55815156771D700428040 /* Ugh */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		53C55814156771D700428040 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53C55825156771D700428040 /* InfoPlist.strings in Resources */,
+				53C5582B156771D700428040 /* Credits.rtf in Resources */,
+				53C55831156771D700428040 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		53C55812156771D700428040 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53C55827156771D700428040 /* main.m in Sources */,
+				53C5582E156771D700428040 /* UGHAppDelegate.mm in Sources */,
+				53C5584215677DA100428040 /* UGHGLView.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		53C55823156771D700428040 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				53C55824156771D700428040 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		53C55829156771D700428040 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				53C5582A156771D700428040 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		53C5582F156771D700428040 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				53C55830156771D700428040 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		53C55832156771D700428040 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		53C55833156771D700428040 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		53C55835156771D700428040 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Ugh/Ugh-Prefix.pch";
+				HEADER_SEARCH_PATHS = glm/glm;
+				INFOPLIST_FILE = "Ugh/Ugh-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		53C55836156771D700428040 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Ugh/Ugh-Prefix.pch";
+				HEADER_SEARCH_PATHS = glm/glm;
+				INFOPLIST_FILE = "Ugh/Ugh-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		53C55810156771D700428040 /* Build configuration list for PBXProject "Ugh" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				53C55832156771D700428040 /* Debug */,
+				53C55833156771D700428040 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		53C55834156771D700428040 /* Build configuration list for PBXNativeTarget "Ugh" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				53C55835156771D700428040 /* Debug */,
+				53C55836156771D700428040 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 53C5580D156771D700428040 /* Project object */;
+}
