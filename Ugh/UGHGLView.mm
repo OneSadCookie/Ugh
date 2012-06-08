@@ -51,7 +51,7 @@
     uint64_t delta = now - _lastFrameTime;
     _lastFrameTime = now;
     
-    double dt = (double)delta * (double)_timebase.numer * 0.000000001 / (double)_timebase.denom;
+    double dt = (double)delta * 0.000000001 * (double)_timebase.numer / (double)_timebase.denom;
     
     _rotation += ROTATION_SPEED * dt;
     if (_rotation > M_PI) _rotation -= 2.0 * M_PI;
