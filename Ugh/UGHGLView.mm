@@ -1,9 +1,12 @@
 #import <glm.hpp>
 #import <ext.hpp>
 
+#import <mach/mach_time.h>
 #import <OpenGL/gl3.h>
 
 #import "UGHGLView.h"
+
+#define ROTATION_SPEED M_PI
 
 @implementation UGHGLView
 {
@@ -15,6 +18,8 @@
     GLuint _program;
     GLuint _mvpLocation;
     
+    struct mach_timebase_info _timebase;
+    uint64_t _lastFrameTime;
     float _rotation;
 }
 
@@ -29,7 +34,29 @@
     self = [super initWithFrame:frameRect pixelFormat:format];
     if (!self) return nil;
     
+    [NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(timer) userInfo:nil repeats:YES];
+    
     return self;
+}
+
+- (void)timer
+{
+    if (_lastFrameTime == 0)
+    {
+        mach_timebase_info(&_timebase);
+        _lastFrameTime = mach_absolute_time();
+    }
+    
+    uint64_t now = mach_absolute_time();
+    uint64_t delta = now - _lastFrameTime;
+    _lastFrameTime = now;
+    
+    double dt = (double)delta * (double)_timebase.numer * 0.000000001 / (double)_timebase.denom;
+    
+    _rotation += ROTATION_SPEED * dt;
+    if (_rotation > M_PI) _rotation -= 2.0 * M_PI;
+    
+    [self setNeedsDisplay:YES];
 }
 
 - (void)prepareOpenGL
