@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5326D8AD1581AF95001A2C57 /* basic.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 5326D8AC1581AF89001A2C57 /* basic.vsh */; };
+		5326D8AE1581AF98001A2C57 /* basic.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 5326D8AB1581AF6C001A2C57 /* basic.fsh */; };
 		53C5581B156771D700428040 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C5581A156771D700428040 /* Cocoa.framework */; };
 		53C55825156771D700428040 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 53C55823156771D700428040 /* InfoPlist.strings */; };
 		53C55827156771D700428040 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 53C55826156771D700428040 /* main.m */; };
@@ -18,6 +20,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5326D8AB1581AF6C001A2C57 /* basic.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = basic.fsh; sourceTree = "<group>"; };
+		5326D8AC1581AF89001A2C57 /* basic.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = basic.vsh; sourceTree = "<group>"; };
 		53C55816156771D700428040 /* Ugh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ugh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53C5581A156771D700428040 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		53C5581D156771D700428040 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -52,7 +56,6 @@
 		53C5580B156771D700428040 = {
 			isa = PBXGroup;
 			children = (
-				53C5584415677DBB00428040 /* OpenGL.framework */,
 				53C55820156771D700428040 /* Ugh */,
 				53C55819156771D700428040 /* Frameworks */,
 				53C55817156771D700428040 /* Products */,
@@ -70,6 +73,7 @@
 		53C55819156771D700428040 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				53C5584415677DBB00428040 /* OpenGL.framework */,
 				53C5581A156771D700428040 /* Cocoa.framework */,
 				53C5581C156771D700428040 /* Other Frameworks */,
 			);
@@ -102,6 +106,8 @@
 		53C55821156771D700428040 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				5326D8AC1581AF89001A2C57 /* basic.vsh */,
+				5326D8AB1581AF6C001A2C57 /* basic.fsh */,
 				53C55822156771D700428040 /* Ugh-Info.plist */,
 				53C55823156771D700428040 /* InfoPlist.strings */,
 				53C55826156771D700428040 /* main.m */,
@@ -165,6 +171,8 @@
 				53C55825156771D700428040 /* InfoPlist.strings in Resources */,
 				53C5582B156771D700428040 /* Credits.rtf in Resources */,
 				53C55831156771D700428040 /* MainMenu.xib in Resources */,
+				5326D8AD1581AF95001A2C57 /* basic.vsh in Resources */,
+				5326D8AE1581AF98001A2C57 /* basic.fsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
