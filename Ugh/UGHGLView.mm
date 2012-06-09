@@ -3,10 +3,14 @@
 
 #import <mach/mach_time.h>
 #import <OpenGL/gl3.h>
+#import <OpenGL/gl3ext.h>
+
+#import "stb_image.h"
 
 #import "UGHGLView.h"
 
-#define ROTATION_SPEED M_PI
+#define ROTATIONS_PER_SECOND 0.25
+#define ROTATION_SPEED (ROTATIONS_PER_SECOND * 2.0 * M_PI)
 
 @implementation UGHGLView
 {
@@ -17,6 +21,9 @@
     
     GLuint _program;
     GLuint _mvpLocation;
+    GLuint _texLocation;
+    
+    GLuint _texture;
     
     struct mach_timebase_info _timebase;
     uint64_t _lastFrameTime;
@@ -68,18 +75,21 @@
     
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(float), (float[]) {
-        -1.0, -1.0, -1.0, 1.0,
-         1.0, -1.0, -1.0, 1.0,
-         1.0, -1.0,  1.0, 1.0,
-        -1.0, -1.0,  1.0, 1.0, 
+    glBufferData(GL_ARRAY_BUFFER, 4 * 6 * sizeof(float), (float []) {
+        // vert                // tc
+        -1.0, -1.0, -1.0, 1.0,  0.0,  0.0,
+         1.0, -1.0, -1.0, 1.0,  1.0,  0.0,
+         1.0, -1.0,  1.0, 1.0,  1.0,  1.0,
+        -1.0, -1.0,  1.0, 1.0,  0.0,  1.0,
     }, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void const *)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void const *)(4 * sizeof(float)));
+    glEnableVertexAttribArray(1);
     
     glGenBuffers(1, &_ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * sizeof(unsigned short), (unsigned short[]) {
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * sizeof(unsigned short), (unsigned short []) {
         0, 1, 2,
         0, 2, 3,
     }, GL_STATIC_DRAW);
@@ -108,6 +118,7 @@
     glAttachShader(_program, vsh);
     glAttachShader(_program, fsh);
     glBindAttribLocation(_program, 0, "position");
+    glBindAttribLocation(_program, 1, "texCoords");
     glLinkProgram(_program);
     GLint linked;
     glGetProgramiv(_program, GL_LINK_STATUS, &linked);
@@ -118,6 +129,24 @@
     glDeleteShader(fsh);
     
     _mvpLocation = glGetUniformLocation(_program, "mvp");
+    _texLocation = glGetUniformLocation(_program, "tex");
+    
+    glGenTextures(1, &_texture);
+    glBindTexture(GL_TEXTURE_2D, _texture);
+    NSData *imageData = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"gplaypattern" withExtension:@"png"]];
+    if (!imageData) abort();
+    if ([imageData length] > INT_MAX) abort();
+    int w, h, comp;
+    void *pixels = stbi_load_from_memory((const stbi_uc *)[imageData bytes], [imageData length], &w, &h, &comp, 4);
+    if (!pixels) abort();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 4.0f);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    free(pixels);
 }
 
 - (void)drawRect:(NSRect)dirtyRect
@@ -125,7 +154,7 @@
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glm::mat4x4 mv = glm::lookAt(
-        glm::vec3(5.0f * cosf(_rotation), 5.0f, 5.0f * sinf(_rotation)),
+        glm::vec3(3.0f * cosf(_rotation), 3.0f, 3.0f * sinf(_rotation)),
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4x4 p = glm::perspective(60.0f, 8.0f/5.0f, 0.01f, 100.0f);
@@ -133,9 +162,11 @@
     
     glUseProgram(_program);
     glUniformMatrix4fv(_mvpLocation, 1, GL_FALSE, glm::value_ptr(mvp));
+    glUniform1i(_texLocation, 0);
     
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
     
+    assert(!glGetError());
     [[self openGLContext] flushBuffer];
 }
 
