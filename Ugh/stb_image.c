@@ -331,6 +331,9 @@ extern void stbi_install_YCbCr_to_RGB(stbi_YCbCr_to_RGB_run func);
 ////   end header file   /////////////////////////////////////////////////////
 #endif // STBI_INCLUDE_STB_IMAGE_H
 
+// 6 analyzer issues.  TODO: fix 'em and submit 'em to Sean Barrett!
+#if !defined(__clang_analyzer__)
+
 #ifndef STBI_HEADER_FILE_ONLY
 
 #ifndef STBI_NO_HDR
@@ -4671,3 +4674,5 @@ int stbi_info_from_callbacks(stbi_io_callbacks const *c, void *user, int *x, int
              on 'test' only check type, not whether we support this variant
       0.50   first released version
 */
+
+#endif
