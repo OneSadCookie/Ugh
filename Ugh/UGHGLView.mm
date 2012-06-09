@@ -1,3 +1,5 @@
+#import <vector>
+
 #import <mach/mach_time.h>
 #import <OpenGL/gl3.h>
 #import <OpenGL/gl3ext.h>
@@ -95,7 +97,7 @@
             }
         }
     }
-    for (auto &req : requiredExtensions)
+    for (auto const &req : requiredExtensions)
     {
         if (!req.present) abort();
     }
@@ -103,26 +105,59 @@
     glGenVertexArrays(1, &_vao);
     glBindVertexArray(_vao);
     
+    glm::vec3 axes[] = { glm::vec3(1, 0, 0), glm::vec3(-1, 0, 0), glm::vec3(0, 1, 0), glm::vec3(0, -1, 0), glm::vec3(0, 0, 1), glm::vec3(0, 0, -1) };
+    glm::vec2 offsets[] = { glm::vec2(-1, -1), glm::vec2(1, -1), glm::vec2(1, 1), glm::vec2(-1, 1) };
+    std::vector<float> vboData;
+    for (auto const &axis: axes)
+    {
+        glm::vec3 perp0, perp1;
+        perp0 = glm::vec3(0, 1, 1) - glm::abs(axis);
+        perp1 = glm::vec3(1, 0, 1) - glm::abs(axis);
+        if (glm::length(perp0) > 1.0001f) perp0 = glm::vec3(1, 1, 0) - glm::abs(axis);
+        else if (glm::length(perp1) > 1.0001f) perp1 = glm::vec3(1, 1, 0) - glm::abs(axis);
+        
+        for (auto const &offset: offsets)
+        {
+            glm::vec3 vertex = axis + offset.x * perp0 + offset.y * perp1;
+            glm::vec2 tc = 0.5f * offset + 0.5f;
+            
+            // waiting on a newer compiler...
+            // vboData.insert(vboData.end(), { vertex.x, vertex.y, vertex.z, 1.0, tc.x, tc.y });
+            vboData.push_back(vertex.x);
+            vboData.push_back(vertex.y);
+            vboData.push_back(vertex.z);
+            vboData.push_back(1.0f);
+            vboData.push_back(tc.x);
+            vboData.push_back(tc.y);
+        }
+    }
+    
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, 4 * 6 * sizeof(float), (float []) {
-        // vert                // tc
-        -1.0, -1.0,  1.0, 1.0,  0.0,  0.0,
-         1.0, -1.0,  1.0, 1.0,  1.0,  0.0,
-         1.0, -1.0, -1.0, 1.0,  1.0,  1.0,
-        -1.0, -1.0, -1.0, 1.0,  0.0,  1.0,
-    }, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vboData.size() * sizeof(float), &(vboData[0]), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void const *)0);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void const *)(4 * sizeof(float)));
     glEnableVertexAttribArray(1);
     
+    std::vector<unsigned short> eboData;
+    for (unsigned i = 0; i < 6; ++i)
+    {
+        unsigned base = i * 4;
+    
+        // waiting on a newer compiler...
+        // eboData.insert(eboData.end(), { base + 0, base + 1, base + 2, base + 0, base + 2, base + 3 });
+        eboData.push_back(base + 0);
+        eboData.push_back(base + 1);
+        eboData.push_back(base + 2);
+        eboData.push_back(base + 0);
+        eboData.push_back(base + 2);
+        eboData.push_back(base + 3);
+    }
+    
     glGenBuffers(1, &_ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * sizeof(unsigned short), (unsigned short []) {
-        0, 1, 2,
-        0, 2, 3,
-    }, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, eboData.size() * sizeof(unsigned short), &(eboData[0]), GL_STATIC_DRAW);
     
     NSData *vshText = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"basic" withExtension:@"vsh"]];
     if (!vshText) abort();
@@ -202,7 +237,7 @@
     
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 }
 
 - (void)drawRect:(NSRect)dirtyRect
@@ -221,7 +256,7 @@
     glUniformMatrix4fv(_mvpLocation, 1, GL_FALSE, glm::value_ptr(mvp));
     glUniform1i(_texLocation, 0);
     
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
     
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glBlitFramebuffer(0, 0, 800, 500, 0, 0, 800, 500, GL_COLOR_BUFFER_BIT, GL_LINEAR);
