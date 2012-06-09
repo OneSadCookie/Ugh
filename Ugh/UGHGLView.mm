@@ -1,9 +1,9 @@
-#import <glm.hpp>
-#import <ext.hpp>
-
 #import <mach/mach_time.h>
 #import <OpenGL/gl3.h>
 #import <OpenGL/gl3ext.h>
+
+#import <glm.hpp>
+#import <ext.hpp>
 
 #import "stb_image.h"
 
@@ -23,7 +23,11 @@
     GLuint _mvpLocation;
     GLuint _texLocation;
     
-    GLuint _texture;
+    GLuint _colorTexture;
+    GLuint _depthTexture;
+    GLuint _fbo;
+    
+    GLuint _wallTexture;
     
     struct mach_timebase_info _timebase;
     uint64_t _lastFrameTime;
@@ -70,6 +74,32 @@
 {
     NSLog(@"prepareOpenGL");
     
+    struct {
+        char const *name;
+        bool        present;
+    } requiredExtensions[] = {
+        { "GL_EXT_texture_filter_anisotropic", false },
+    };
+    
+    GLint extensionCount;
+    glGetIntegerv(GL_NUM_EXTENSIONS, &extensionCount);
+    for (GLint i = 0; i < extensionCount; ++i)
+    {
+        char const *ext = (char const *)glGetStringi(GL_EXTENSIONS, i);
+        for (auto &req : requiredExtensions)
+        {
+            if (strcmp(req.name, ext) == 0)
+            {
+                req.present = true;
+                break;
+            }
+        }
+    }
+    for (auto &req : requiredExtensions)
+    {
+        if (!req.present) abort();
+    }
+    
     glGenVertexArrays(1, &_vao);
     glBindVertexArray(_vao);
     
@@ -77,10 +107,10 @@
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, 4 * 6 * sizeof(float), (float []) {
         // vert                // tc
-        -1.0, -1.0, -1.0, 1.0,  0.0,  0.0,
-         1.0, -1.0, -1.0, 1.0,  1.0,  0.0,
-         1.0, -1.0,  1.0, 1.0,  1.0,  1.0,
-        -1.0, -1.0,  1.0, 1.0,  0.0,  1.0,
+        -1.0, -1.0,  1.0, 1.0,  0.0,  0.0,
+         1.0, -1.0,  1.0, 1.0,  1.0,  0.0,
+         1.0, -1.0, -1.0, 1.0,  1.0,  1.0,
+        -1.0, -1.0, -1.0, 1.0,  0.0,  1.0,
     }, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void const *)0);
     glEnableVertexAttribArray(0);
@@ -131,8 +161,30 @@
     _mvpLocation = glGetUniformLocation(_program, "mvp");
     _texLocation = glGetUniformLocation(_program, "tex");
     
-    glGenTextures(1, &_texture);
-    glBindTexture(GL_TEXTURE_2D, _texture);
+    glGenTextures(1, &_colorTexture);
+    glBindTexture(GL_TEXTURE_2D, _colorTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 800, 500, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    
+    glGenTextures(1, &_depthTexture);
+    glBindTexture(GL_TEXTURE_2D, _depthTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, 800, 500, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    
+    glGenFramebuffers(1, &_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, _colorTexture, 0);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, _depthTexture, 0);
+    assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+    
+    glGenTextures(1, &_wallTexture);
+    glBindTexture(GL_TEXTURE_2D, _wallTexture);
     NSData *imageData = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"gplaypattern" withExtension:@"png"]];
     if (!imageData) abort();
     if ([imageData length] > INT_MAX) abort();
@@ -147,10 +199,15 @@
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     glGenerateMipmap(GL_TEXTURE_2D);
     free(pixels);
+    
+    glDepthFunc(GL_LEQUAL);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 }
 
 - (void)drawRect:(NSRect)dirtyRect
 {
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _fbo);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glm::mat4x4 mv = glm::lookAt(
@@ -165,6 +222,9 @@
     glUniform1i(_texLocation, 0);
     
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
+    
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glBlitFramebuffer(0, 0, 800, 500, 0, 0, 800, 500, GL_COLOR_BUFFER_BIT, GL_LINEAR);
     
     assert(!glGetError());
     [[self openGLContext] flushBuffer];
