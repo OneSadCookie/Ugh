@@ -4,8 +4,8 @@
 #import <OpenGL/gl3.h>
 #import <OpenGL/gl3ext.h>
 
-#import <glm.hpp>
-#import <ext.hpp>
+#import <glm/glm.hpp>
+#import <glm/ext.hpp>
 
 #import "stb_image.h"
 
@@ -29,6 +29,7 @@
     GLuint _depthTexture;
     GLuint _fbo;
     
+    GLuint _floorTexture;
     GLuint _wallTexture;
     
     struct mach_timebase_info _timebase;
@@ -70,6 +71,27 @@
     if (_rotation > M_PI) _rotation -= 2.0 * M_PI;
     
     [self setNeedsDisplay:YES];
+}
+
+static GLuint load_texture(NSData *imageData)
+{
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    if (!imageData) abort();
+    if ([imageData length] > INT_MAX) abort();
+    int w, h, comp;
+    void *pixels = stbi_load_from_memory((const stbi_uc *)[imageData bytes], [imageData length], &w, &h, &comp, 4);
+    if (!pixels) abort();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 4.0f);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    free(pixels);
+    return texture;
 }
 
 - (void)prepareOpenGL
@@ -218,22 +240,8 @@
     glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, _depthTexture, 0);
     assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
     
-    glGenTextures(1, &_wallTexture);
-    glBindTexture(GL_TEXTURE_2D, _wallTexture);
-    NSData *imageData = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"gplaypattern" withExtension:@"png"]];
-    if (!imageData) abort();
-    if ([imageData length] > INT_MAX) abort();
-    int w, h, comp;
-    void *pixels = stbi_load_from_memory((const stbi_uc *)[imageData bytes], [imageData length], &w, &h, &comp, 4);
-    if (!pixels) abort();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 4.0f);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    free(pixels);
+    _wallTexture = load_texture([NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"bright_squares" withExtension:@"png"]]);
+    _floorTexture = load_texture([NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"noise_pattern_with_crosslines" withExtension:@"png"]]);
     
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_DEPTH_TEST);
@@ -260,6 +268,7 @@
     
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glBlitFramebuffer(0, 0, 800, 500, 0, 0, 800, 500, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+//    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _fbo);
     
     assert(!glGetError());
     [[self openGLContext] flushBuffer];
