@@ -11,8 +11,21 @@
 
 #import "UGHGLView.h"
 
-#define ROTATIONS_PER_SECOND 0.25
+#define ROTATIONS_PER_SECOND 0.125
 #define ROTATION_SPEED (ROTATIONS_PER_SECOND * 2.0 * M_PI)
+
+static char Map[] =
+    "xxxxxxxx"
+    "x   x  x"
+    "x   x  x"
+    "xxx x xx"
+    "x x    x"
+    "x xxx  x"
+    "x      x"
+    "xxxxxxxx";    
+
+#define MAP_WIDTH 8
+#define MAP_HEIGHT 8
 
 @implementation UGHGLView
 {
@@ -44,6 +57,9 @@
         NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
         0,
     }];
+    assert(format);
+    
+    NSLog(@"hi");
 
     self = [super initWithFrame:frameRect pixelFormat:format];
     if (!self) return nil;
@@ -73,6 +89,14 @@
     [self setNeedsDisplay:YES];
 }
 
+static void set_texture_params(GLenum wrap_s, GLenum wrap_t, GLenum mag, GLenum min)
+{
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
+}
+
 static GLuint load_texture(NSData *imageData)
 {
     GLuint texture;
@@ -83,11 +107,8 @@ static GLuint load_texture(NSData *imageData)
     int w, h, comp;
     void *pixels = stbi_load_from_memory((const stbi_uc *)[imageData bytes], [imageData length], &w, &h, &comp, 4);
     if (!pixels) abort();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 4.0f);
+    set_texture_params(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     glGenerateMipmap(GL_TEXTURE_2D);
     free(pixels);
@@ -220,18 +241,12 @@ static GLuint load_texture(NSData *imageData)
     
     glGenTextures(1, &_colorTexture);
     glBindTexture(GL_TEXTURE_2D, _colorTexture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    set_texture_params(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 800, 500, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     
     glGenTextures(1, &_depthTexture);
     glBindTexture(GL_TEXTURE_2D, _depthTexture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    set_texture_params(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, 800, 500, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     
     glGenFramebuffers(1, &_fbo);
@@ -253,18 +268,31 @@ static GLuint load_texture(NSData *imageData)
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _fbo);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glm::mat4x4 mv = glm::lookAt(
-        glm::vec3(3.0f * cosf(_rotation), 3.0f, 3.0f * sinf(_rotation)),
-        glm::vec3(0.0f, 0.0f, 0.0f),
+    glm::mat4x4 v = glm::lookAt(
+        glm::vec3(MAP_WIDTH + 10.0f * cosf(_rotation), 10.0f, MAP_HEIGHT + 10.0f * sinf(_rotation)),
+        glm::vec3(MAP_WIDTH, 0.0f, MAP_HEIGHT),
         glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4x4 p = glm::perspective(60.0f, 8.0f/5.0f, 0.01f, 100.0f);
-    glm::mat4x4 mvp = p * mv;
+    glm::mat4x4 vp = p * v;
     
     glUseProgram(_program);
-    glUniformMatrix4fv(_mvpLocation, 1, GL_FALSE, glm::value_ptr(mvp));
     glUniform1i(_texLocation, 0);
-    
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
+
+    for (unsigned y = 0; y < MAP_HEIGHT; ++y)
+    {
+        for (unsigned x = 0; x < MAP_WIDTH; ++x)
+        {
+            if (Map[x + y * MAP_WIDTH] == 'x')
+            {
+                glm::mat4x4 m = glm::translate(2.0f * float(x), 0.0f, 2.0f * float(y));
+                glm::mat4x4 mvp = vp * m;
+            
+                glUniformMatrix4fv(_mvpLocation, 1, GL_FALSE, glm::value_ptr(mvp));
+                glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
+
+            }
+        }
+    }
     
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glBlitFramebuffer(0, 0, 800, 500, 0, 0, 800, 500, GL_COLOR_BUFFER_BIT, GL_LINEAR);
