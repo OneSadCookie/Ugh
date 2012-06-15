@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		53269FCA158AD1FC00C795EB /* bright_squares.png in Resources */ = {isa = PBXBuildFile; fileRef = 53269FC8158AD1FC00C795EB /* bright_squares.png */; };
+		53269FCB158AD1FC00C795EB /* noise_pattern_with_crosslines.png in Resources */ = {isa = PBXBuildFile; fileRef = 53269FC9158AD1FC00C795EB /* noise_pattern_with_crosslines.png */; };
 		5326D8AD1581AF95001A2C57 /* basic.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 5326D8AC1581AF89001A2C57 /* basic.vsh */; };
 		5326D8AE1581AF98001A2C57 /* basic.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 5326D8AB1581AF6C001A2C57 /* basic.fsh */; };
 		5394E8F21582FF620077C13A /* stb_image.c in Sources */ = {isa = PBXBuildFile; fileRef = 5394E8F11582FF620077C13A /* stb_image.c */; };
-		5394E8F915845BC30077C13A /* bright_squares.png in Resources */ = {isa = PBXBuildFile; fileRef = 5394E8F715845BC30077C13A /* bright_squares.png */; };
-		5394E8FA15845BC30077C13A /* noise_pattern_with_crosslines.png in Resources */ = {isa = PBXBuildFile; fileRef = 5394E8F815845BC30077C13A /* noise_pattern_with_crosslines.png */; };
 		5394E8FC15845CDD0077C13A /* tileset.cc in Sources */ = {isa = PBXBuildFile; fileRef = 5394E8FB15845CDD0077C13A /* tileset.cc */; };
 		53C5581B156771D700428040 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C5581A156771D700428040 /* Cocoa.framework */; };
 		53C55825156771D700428040 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 53C55823156771D700428040 /* InfoPlist.strings */; };
@@ -24,12 +24,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		53269FC8158AD1FC00C795EB /* bright_squares.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bright_squares.png; path = ../SubtlePatterns/bright_squares.png; sourceTree = "<group>"; };
+		53269FC9158AD1FC00C795EB /* noise_pattern_with_crosslines.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = noise_pattern_with_crosslines.png; path = ../SubtlePatterns/noise_pattern_with_crosslines.png; sourceTree = "<group>"; };
 		5326D8AB1581AF6C001A2C57 /* basic.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = basic.fsh; sourceTree = "<group>"; };
 		5326D8AC1581AF89001A2C57 /* basic.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = basic.vsh; sourceTree = "<group>"; };
 		5394E8F11582FF620077C13A /* stb_image.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stb_image.c; sourceTree = "<group>"; };
 		5394E8F41582FFA30077C13A /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
-		5394E8F715845BC30077C13A /* bright_squares.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bright_squares.png; sourceTree = "<group>"; };
-		5394E8F815845BC30077C13A /* noise_pattern_with_crosslines.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noise_pattern_with_crosslines.png; sourceTree = "<group>"; };
 		5394E8FB15845CDD0077C13A /* tileset.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tileset.cc; sourceTree = "<group>"; };
 		5394E8FD15845CF00077C13A /* tileset.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tileset.hh; sourceTree = "<group>"; };
 		53C55816156771D700428040 /* Ugh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ugh.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -120,8 +120,8 @@
 		53C55821156771D700428040 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				5394E8F715845BC30077C13A /* bright_squares.png */,
-				5394E8F815845BC30077C13A /* noise_pattern_with_crosslines.png */,
+				53269FC8158AD1FC00C795EB /* bright_squares.png */,
+				53269FC9158AD1FC00C795EB /* noise_pattern_with_crosslines.png */,
 				5326D8AC1581AF89001A2C57 /* basic.vsh */,
 				5326D8AB1581AF6C001A2C57 /* basic.fsh */,
 				53C55822156771D700428040 /* Ugh-Info.plist */,
@@ -189,8 +189,8 @@
 				53C55831156771D700428040 /* MainMenu.xib in Resources */,
 				5326D8AD1581AF95001A2C57 /* basic.vsh in Resources */,
 				5326D8AE1581AF98001A2C57 /* basic.fsh in Resources */,
-				5394E8F915845BC30077C13A /* bright_squares.png in Resources */,
-				5394E8FA15845BC30077C13A /* noise_pattern_with_crosslines.png in Resources */,
+				53269FCA158AD1FC00C795EB /* bright_squares.png in Resources */,
+				53269FCB158AD1FC00C795EB /* noise_pattern_with_crosslines.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
